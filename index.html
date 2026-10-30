@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Showdown Deck Lab (unofficial)</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>Showdown Deck Lab</h1>
+    <p class="sub">Unofficial fan tool for Showdown deck builders</p>
+  </div>
+  <nav class="tabs" aria-label="Panels">
+    <button data-tab="browse" class="on">Cards</button>
+    <button data-tab="deck">Deck <span id="tabCount">0/30</span></button>
+  </nav>
+</header>
+
+<main>
+  <section id="browse" class="panel on" aria-label="Card browser">
+    <div class="filters">
+      <input id="q" type="search" placeholder="Search name or text" aria-label="Search">
+      <select id="fClass" aria-label="Class"><option value="">All classes</option></select>
+      <select id="fRarity" aria-label="Rarity"><option value="">Any rarity</option></select>
+      <select id="fStage" aria-label="Stage"><option value="">Any stage</option></select>
+      <select id="fKw" aria-label="Keyword"><option value="">Any keyword</option></select>
+      <select id="fPot" aria-label="Pot value">
+        <option value="">Any pot</option><option value="neg">Pot below 0</option><option value="0">Pot 0</option>
+        <option value="low">Pot 1 to 3</option><option value="high">Pot 4 or more</option>
+      </select>
+      <select id="fSort" aria-label="Sort"><option value="name">Sort: name</option><option value="class">Sort: class</option><option value="pot">Sort: pot</option><option value="stage">Sort: stage</option></select>
+      <button id="fReset" type="button">Reset</button>
+    </div>
+    <p id="resultCount" class="muted" aria-live="polite"></p>
+    <div id="grid" class="grid"></div>
+  </section>
+
+  <section id="deck" class="panel" aria-label="Deck builder and analysis">
+    <div class="box">
+      <div class="row">
+        <input id="deckName" type="text" maxlength="40" placeholder="Deck name" aria-label="Deck name">
+        <button id="clearDeck" type="button">Clear</button>
+      </div>
+      <div class="meter"><div id="meterFill"></div></div>
+      <p id="deckCount" class="big"></p>
+      <ul id="legality" class="legality"></ul>
+      <p class="note">Rules shown are the catalog's own (30 cards, at most 2 classes, 2 copies of a Common, 1 of a Rare). They come from the game client's catalog as copied by Showdowned, not from an official rules page: <b>assumption</b>.</p>
+      <div id="deckList"></div>
+    </div>
+
+    <div class="box">
+      <h2>Save and share</h2>
+      <div class="row"><button id="saveDeck" type="button" class="accent">Save locally</button>
+        <select id="savedList" aria-label="Saved decks"><option value="">Saved decks</option></select>
+        <button id="loadSaved" type="button">Load</button><button id="delSaved" type="button">Delete</button></div>
+      <label class="lbl" for="code">Share code (also kept in the page URL after #)</label>
+      <div class="row"><input id="code" type="text" readonly><button id="copyCode" type="button">Copy</button><button id="copyLink" type="button">Copy link</button></div>
+      <label class="lbl" for="importBox">Import a code or link</label>
+      <div class="row"><input id="importBox" type="text" placeholder="1.f324.…"><button id="importBtn" type="button">Import</button></div>
+      <p id="msg" class="muted" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="box">
+      <h2>Analysis</h2>
+      <div id="analysis" class="muted">Add cards to see the breakdown.</div>
+    </div>
+
+    <div class="box">
+      <h2>Draw odds</h2>
+      <p class="note"><b>Assumptions, not official rules:</b> you start with 4 action cards and draw 2 at the start of the first stage (operator observation from play, 2026-10-27). Later-stage draws and what the 5-card hand limit discards are not modelled; edit the numbers to match what you see in the client. Odds assume a fully shuffled 30-card deck.</p>
+      <div class="inputs">
+        <label>Opening hand <input id="oOpen" type="number" min="0" max="30" value="4"></label>
+        <label>Draw at first stage <input id="oFirst" type="number" min="0" max="10" value="2"></label>
+        <label>Extra draw per later stage <input id="oLater" type="number" min="0" max="10" value="0"></label>
+        <label>At least <input id="oAtLeast" type="number" min="1" max="5" value="1"> copies</label>
+      </div>
+      <label class="lbl" for="oTarget">Target</label>
+      <select id="oTarget"></select>
+      <div id="odds"></div>
+    </div>
+
+    <div class="box">
+      <h2>Export image</h2>
+      <p class="note">Draws the list on a canvas in your browser. Nothing is uploaded.</p>
+      <div class="row"><button id="exportPng" type="button" class="accent">Download PNG</button></div>
+      <canvas id="cv" width="1200" height="720" aria-label="Deck image preview"></canvas>
+    </div>
+  </section>
+</main>
+
+<dialog id="detail"><div id="detailBody"></div><form method="dialog"><button class="accent">Close</button></form></dialog>
+
+<footer>
+  <p><b>Unofficial fan tool, not affiliated with Showdown.</b> Card data: the unofficial catalog at showdowned.vercel.app/cards (copied 2026-10-23, catalog revision <span id="rev"></span>); card text changes with game updates. No official art is used. No trackers, no accounts: decks stay in your browser.</p>
+</footer>
+
+<script src="data/cards.js"></script>
+<script src="js/lib.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
